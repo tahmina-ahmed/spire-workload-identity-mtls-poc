@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Certificates and private keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Kubernetes local configuration
+kubeconfig
+*.kubeconfig
+
+# Runtime and build artifacts
+*.log
+.DS_Store
+.pytest_cache/
+.coverage
+
+# Upstream SPIRE tutorial source (not part of this project)
+spire-tutorials/

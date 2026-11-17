@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+  namespace: demo
+  labels:
+    app: service-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+  template:
+    metadata:
+      labels:
+        app: service-b
+    spec:
+      serviceAccountName: service-b
+      containers:
+        - name: service-b
+          image: spire-service-b:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SPIFFE_ENDPOINT_SOCKET
+              value: unix:///run/spire/sockets/agent.sock
+          volumeMounts:
+            - name: spire-agent-socket
+              mountPath: /run/spire/sockets
+              readOnly: true
+      volumes:
+        - name: spire-agent-socket
+          hostPath:
+            path: /run/spire/sockets
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-b
+  namespace: demo
+spec:
+  selector:
+    app: service-b
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+    - name: mtls
+      port: 8443
+      targetPort: 8443
+  type: ClusterIP
